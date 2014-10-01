@@ -1,0 +1,12 @@
+[submodule "usr/src/rsync"]
+	path = usr/src/rsync
+	url = git://git.samba.org/rsync.git
+[submodule "usr/src/busybox"]
+	path = usr/src/busybox
+	url = git://git.busybox.net/busybox
+[submodule "usr/src/redis"]
+	path = usr/src/redis
+	url = git@github.com:antirez/redis.git
+[submodule "usr/src/dropbear"]
+	path = usr/src/dropbear
+	url = git@github.com:mkj/dropbear.git
