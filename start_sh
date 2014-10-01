@@ -1,0 +1,2 @@
+# run using `sh /var/mnt/usbms/start_sh`
+PATH='/var/mnt/usbms/bin/:/var/mnt/usbms/usr/bin/:/var/mnt/usbms/usr/local/bin/:/var/mnt/usbms/usr/compiler/bin/' /var/mnt/usbms/bin/sh

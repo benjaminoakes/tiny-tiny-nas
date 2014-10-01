@@ -1,0 +1,4 @@
+#!/bin/sh
+/var/mnt/usbms/bin/crond -c /var/mnt/usbms/etc/crontabs
+/var/mnt/usbms/bin/httpd -p 3000 -h /var/mnt/usbms/var/www/ -c /var/mnt/usbms/etc/httpd.conf 
+/var/mnt/usbms/bin/inetd /var/mnt/usbms/etc/inetd.conf

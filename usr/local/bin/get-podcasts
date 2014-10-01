@@ -1,0 +1,63 @@
+#!/bin/sh
+version='0.2.0'
+
+show_usage() {
+  cat <<EOF
+Usage: $0 list_url serv_root
+
+Download files from the CSV at list_url to serv_root.
+
+  list_url    URL of CSV file with format category,name,url
+  serv_root   Where files will be downloaded, with directories made by category.
+  --help      Show this help text
+  --version   Show version
+EOF
+}
+
+show_version() {
+  echo "v$version"
+}
+
+# Fetch downloads given from a CSV
+#
+# Format: category,name,url
+download_listed() {
+  local first=1
+  local category name url destination
+  
+  while IFS=',' read category name url; do
+    # Skip header
+    if [ 0 -eq $first ]; then
+      destination="$category/$name"
+
+      logger "url: $url"
+      logger "destination: $destination"
+      mkdir -p "$category"
+      wget  "$url" -O "$destination"
+    fi
+  
+    first=0
+  done
+}
+
+get_list_and_download() {
+  local list_url="$1" serv_root="$2" tmp_list='/tmp/download.csv'
+
+  # There's a bug with `wget -q`, so we download to a file instead.
+  wget -O "$tmp_list" "$list_url"
+  cd "$serv_root"
+  download_listed < "$tmp_list"
+  rm -f "$tmp_list"
+}
+
+main() {
+  if [ "--version" == "$1" ]; then
+    show_version
+  elif [ "--help" == "$1" -o $# -ne 2 ]; then
+    show_usage
+  else
+    get_list_and_download "$1" "$2"
+  fi
+}
+
+main $@

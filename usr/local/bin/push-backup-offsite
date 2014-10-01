@@ -1,0 +1,1 @@
+HOME='/var/mnt/usbms/home' /var/mnt/usbms/usr/bin/scp -i /var/mnt/usbms/home/.ssh/id_rsa /var/mnt/usbms/serv/Backups/* offsite-server:~

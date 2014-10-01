@@ -7,6 +7,8 @@ This project started because I found out my Actiontec C1000A router had an unuse
 
 It's a really tiny box!  It's an embedded system without a ton of resources to spare, but it takes almost no power, would be left running all day anyway, and can do some useful tasks.
 
+(NOTE: work in progress -- I'm using a version of this, but a lot of the current code is hardcoded for my use!)
+
 Features
 --------
 
@@ -27,3 +29,26 @@ Other services:
     * Redis-based
   * Offsite backup
     * Rsync backups offsite over SSH
+
+Installation
+------------
+
+This is intentionally *NOT* a firmware replacement.  Unplug your USB disk and everything will be back to normal.  However, you'll have to manually start the services you want.
+
+Volume must be formatted as ext3 (not ext2 or ext4).  FAT also works, but symlinks aren't supported, so it's not a good solution.
+
+TODO
+
+Notes
+-----
+
+I'm not sure why, but the Actiontec firmware changes the name of the root user to "admin".
+
+Thanks
+------
+
+  * Aboriginal Linux
+  * BusyBox
+  * Dropbear
+  * Rsync
+  * Redis
