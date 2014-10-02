@@ -24,6 +24,7 @@ Other services:
     * Lists
   * Podcast downloader (HTTP only)
     * Uses configured feed on an external server
+    * Removes old podcasts based on configuration
   * HTTP downloader
     * Submit a URL and close your laptop; come back later and the file will be downloaded.
     * Redis-based
