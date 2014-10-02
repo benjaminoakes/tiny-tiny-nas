@@ -1,0 +1,5 @@
+*-mips
+*-i686
+bin/*
+usr/bin/*
+usr/bin/compiler/*

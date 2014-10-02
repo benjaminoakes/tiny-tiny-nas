@@ -1,0 +1,23 @@
+#!/bin/sh
+# Download precompiled binaries
+
+arch=$(uname -m)
+
+# Not everything is built for x86_64
+if [ "$arch" = "x86_64" ]; then
+  arch="i686"
+fi
+
+wget "http://landley.net/aboriginal/bin/native-compiler-$arch.tar.bz2"
+tar xvfj "native-compiler-$arch.tar.bz2"
+rm "native-compiler-$arch.tar.bz2"
+mv "native-compiler-$arch/" "usr/bin/"
+ln -f -s "usr/bin/native-compiler-$arch" "usr/bin/compiler"
+
+wget "http://www.busybox.net/downloads/binaries/1.20.0/busybox-$arch" -O "bin/busybox-$arch"
+chmod +x "bin/busybox-$arch"
+ln -f -s "bin/busybox-$arch" "bin/busybox"
+
+wget "http://landley.net/aboriginal/bin/dropbearmulti-$arch" -O "usr/bin/dropbearmulti-$arch"
+chmod +x "usr/bin/dropbearmulti-$arch"
+ln -f -s "usr/bin/dropbearmulti-$arch" "usr/bin/dropbearmulti" 
