@@ -28,7 +28,7 @@ tmp_list="$PODCAST_TMP_DIR/rss.csv"
 mkdir -p "$PODCAST_TMP_DIR"
 wget -O "$tmp_list" "$PODCAST_CSV_URL"
 
-mkdir -p $PODCAST_DESTINATION
+mkdir -p "$PODCAST_DESTINATION"
 # Get rid of the old ones
 find "$PODCAST_DESTINATION" -type f -mtime +$PODCAST_MAX_AGE_DAYS -exec rm -rfv {} \;
 cd "$PODCAST_DESTINATION"
