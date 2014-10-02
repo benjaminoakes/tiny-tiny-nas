@@ -23,7 +23,7 @@ Other services:
   * Simple file browser
     * Lists
   * Podcast downloader (HTTP only)
-    * Uses configured feed on external server
+    * Uses configured feed on an external server
   * HTTP downloader
     * Submit a URL and close your laptop; come back later and the file will be downloaded.
     * Redis-based
