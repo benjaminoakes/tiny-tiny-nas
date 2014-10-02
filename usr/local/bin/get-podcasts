@@ -8,15 +8,21 @@ source "/var/mnt/etc/get-podcasts.env"
 # Format: name,url
 download_listed() {
   local first=1
-  local name url
+  local name clean_name url
   
   # No parsing beyond splitting on comma
   while IFS=',' read name url; do
+    clean_name=$(echo $name | sed 's/[?\/]/_/g')
+
     # Skip header
     if [ 0 -eq $first ]; then
-      wget "$url" -O "$name"
-      # Force updated mtime
-      touch "$name"
+      if [ -f "$clean_name" ]; then
+        echo "File exists, skipping $clean_name"
+      else
+        wget "$url" -O "$clean_name"
+        # Force updated mtime
+        touch "$clean_name"
+      fi
     fi
   
     first=0
