@@ -1,63 +1,38 @@
 #!/bin/sh
-version='0.2.0'
+set -o errexit
 
-show_usage() {
-  cat <<EOF
-Usage: $0 list_url serv_root
-
-Download files from the CSV at list_url to serv_root.
-
-  list_url    URL of CSV file with format category,name,url
-  serv_root   Where files will be downloaded, with directories made by category.
-  --help      Show this help text
-  --version   Show version
-EOF
-}
-
-show_version() {
-  echo "v$version"
-}
+source "/var/mnt/etc/get-podcasts.env"
 
 # Fetch downloads given from a CSV
 #
-# Format: category,name,url
+# Format: name,url
 download_listed() {
   local first=1
-  local category name url destination
+  local name url
   
-  while IFS=',' read category name url; do
+  # No parsing beyond splitting on comma
+  while IFS=',' read name url; do
     # Skip header
     if [ 0 -eq $first ]; then
-      destination="$category/$name"
-
-      logger "url: $url"
-      logger "destination: $destination"
-      mkdir -p "$category"
-      wget  "$url" -O "$destination"
+      wget "$url" -O "$name"
+      # Force updated mtime
+      touch "$name"
     fi
   
     first=0
   done
 }
 
-get_list_and_download() {
-  local list_url="$1" serv_root="$2" tmp_list='/tmp/download.csv'
+# There's a bug with `wget -q`, so we download to a file instead.
+tmp_list="$PODCAST_TMP_DIR/rss.csv"
+mkdir -p "$PODCAST_TMP_DIR"
+wget -O "$tmp_list" "$PODCAST_CSV_URL"
 
-  # There's a bug with `wget -q`, so we download to a file instead.
-  wget -O "$tmp_list" "$list_url"
-  cd "$serv_root"
-  download_listed < "$tmp_list"
-  rm -f "$tmp_list"
-}
+mkdir -p $PODCAST_DESTINATION
+# Get rid of the old ones
+find "$PODCAST_DESTINATION" -type f -mtime +$PODCAST_MAX_AGE_DAYS -exec rm -rfv {} \;
+cd "$PODCAST_DESTINATION"
+# Download the new ones
+download_listed < "$tmp_list"
 
-main() {
-  if [ "--version" == "$1" ]; then
-    show_version
-  elif [ "--help" == "$1" -o $# -ne 2 ]; then
-    show_usage
-  else
-    get_list_and_download "$1" "$2"
-  fi
-}
-
-main $@
+rm -f "$tmp_list"
