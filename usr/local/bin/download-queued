@@ -2,12 +2,7 @@
 
 hostname="nas"
 
-redis_hostname=""
-redis_port=""
-redis_password=""
-queue=""
-wait_s="5"
-
+source "/var/mnt/etc/download-queued.env"
 base_path='/var/mnt/usbms/serv'
 
 log_info() {
