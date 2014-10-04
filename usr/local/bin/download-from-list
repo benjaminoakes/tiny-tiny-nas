@@ -38,6 +38,10 @@ download_listed() {
         wget "$url" -O "$clean_name"
         # Force updated mtime
         touch "$clean_name"
+
+        # Automatically compute checksums
+        md5sum "$clean_name" >> MD5SUMS
+        sha1sum "$clean_name" >> SHA1SUMS
       fi
     fi
   
