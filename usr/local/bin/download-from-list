@@ -1,6 +1,10 @@
 #!/bin/sh
 set -o errexit
 
+# Some sites give 403 Forbidden to the wget User-Agent
+version="0.1"
+user_agent="TinyTinyNAS/$version ($(uname -m) $(uname -s))"
+
 show_usage() {
   cat <<EOF
 Usage: $0 csv_url destination [max_age_days]
@@ -35,15 +39,14 @@ download_listed() {
       if [ -f "$clean_name" ]; then
         echo "File exists, skipping $clean_name"
       else
-        wget "$url" -O "$clean_name.download"
+        wget --user-agent "$user_agent" "$url" -O "$clean_name.download"
         mv -v "$clean_name.download" "$clean_name"
 
-        # Force updated mtime
+        # Force updated mtime for max_age_days
         touch "$clean_name"
 
-        # Automatically compute checksums
-        md5sum "$clean_name" >> MD5SUMS
-        sha1sum "$clean_name" >> SHA1SUMS
+        checksum "$clean_name"
+        unzip_if_zipfile "$clean_name"
       fi
     fi
 
@@ -51,9 +54,33 @@ download_listed() {
   done
 }
 
+# Automatically compute checksums
+checksum() {
+  local path="$1"
+
+  md5sum "$clean_name" >> MD5SUMS
+  sha1sum "$clean_name" >> SHA1SUMS
+  sha256sum "$clean_name" >> SHA256SUMS
+}
+
+
+# Automatically unzip .zip files
+#
+# We could also untar, but that's rarely useful.  Developers tend to use .tgz
+# for lots of small files (e.g. source code) and .zip files for bundled up
+# larger files (like MP3 albums, etc).
+unzip_if_zipfile() {
+  local path="$1"
+
+  # If the extension is .zip
+  if [ "$(basename "$path" .zip)" != "$(basename "$path")" ]; then
+    unzip -d "$(basename "$path" .zip)" "$path"
+  fi
+}
+
 get_list_and_download() {
   # There's a bug with `wget -q`, so we download to a file instead.
-  wget -O "$tmp_list" "$csv_url"
+  wget --user-agent "$user_agent" -O "$tmp_list" "$csv_url"
 
   mkdir -p "$destination"
 
