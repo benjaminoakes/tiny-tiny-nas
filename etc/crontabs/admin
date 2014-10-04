@@ -1,5 +1,5 @@
 PATH='/var/mnt/usbms/bin/:/var/mnt/usbms/usr/bin/:/var/mnt/usbms/usr/local/bin/'
-# # Uncomment to enable:
-# 0	1	*	*	*	/var/mnt/usbms/bin/sh /var/mnt/usbms/usr/local/bin/get-podcasts http://server/download.csv >> /var/mnt/usbms/var/log/get-podcasts.log
+# # Examples
+# 0	1	*	*	*	/var/mnt/usbms/bin/sh /var/mnt/usbms/usr/local/bin/download-from-list http://server/podcasts.csv /var/mnt/usbms/serv/Podcasts 7 >> /var/mnt/usbms/var/log/download-podcasts.log
+# 0	1	*	*	*	/var/mnt/usbms/bin/sh /var/mnt/usbms/usr/local/bin/download-from-list http://server/queue.csv /var/mnt/usbms/serv/Downloads >> /var/mnt/usbms/var/log/download-queue.log
 # 0	3	*	*	*	/var/mnt/usbms/bin/sh /var/mnt/usbms/usr/local/bin/push-backup-offsite >> /var/mnt/usbms/var/log/push-backup-offsite.log
-# 30	*	*	*	*	/var/mnt/usbms/bin/sh /var/mnt/usbms/usr/local/bin/download-queued >> /var/mnt/usbms/var/log/download-queued.log
