@@ -7,7 +7,7 @@ user_agent="TinyTinyNAS/$version ($(uname -m) $(uname -s))"
 
 show_usage() {
   cat <<EOF
-Usage: $0 csv_url destination [max_age_days]
+Usage: $0 lock_path csv_url destination [max_age_days]
 
 Download files specified in a remote CSV file to the given destination.
 Existing files are skipped.
@@ -95,16 +95,26 @@ get_list_and_download() {
 }
 
 main() {
-  csv_url="$1"
-  destination="$2"
-  max_age_days="$3"
+  lock_path="$1"
+  csv_url="$2"
+  destination="$3"
+  max_age_days="$4"
   tmp_list=$(mktemp)
+
+  # Use a lock dir instead of a lock file because mkdir is atomic
+  # http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at
+  if ! mkdir "$lock_path" 2>/dev/null; then
+    echo "$0: already running with $lock_path" >&2
+    exit 1
+  fi
 
   if [ "$csv_url" = "" ] || [ "$destination" = "" ]; then
     show_usage
   else
     get_list_and_download
   fi
+
+  rmdir "$lock_path"
 }
 
 main $@
