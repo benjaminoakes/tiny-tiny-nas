@@ -3,3 +3,5 @@
 bin/*
 usr/bin/*
 usr/bin/compiler/*
+serv/*
+tmp/*
