@@ -25,7 +25,7 @@ EOF
 download_listed() {
   local first=1
   local name clean_name url
-  
+
   # No parsing beyond splitting on comma
   while IFS=',' read name url; do
     clean_name=$(echo $name | sed 's/[?\/]/_/g')
@@ -37,6 +37,7 @@ download_listed() {
       else
         wget "$url" -O "$clean_name.download"
         mv -v "$clean_name.download" "$clean_name"
+
         # Force updated mtime
         touch "$clean_name"
 
@@ -45,7 +46,7 @@ download_listed() {
         sha1sum "$clean_name" >> SHA1SUMS
       fi
     fi
-  
+
     first=0
   done
 }
