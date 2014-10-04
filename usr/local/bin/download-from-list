@@ -1,5 +1,4 @@
 #!/bin/sh
-set -o errexit
 
 # Some sites give 403 Forbidden to the wget User-Agent
 version="0.1"
@@ -7,7 +6,7 @@ user_agent="TinyTinyNAS/$version ($(uname -m) $(uname -s))"
 
 show_usage() {
   cat <<EOF
-Usage: $0 lock_path csv_url destination [max_age_days]
+Usage: $0 absolute_lock_path csv_url destination [max_age_days]
 
 Download files specified in a remote CSV file to the given destination.
 Existing files are skipped.
@@ -17,10 +16,10 @@ comma separated values are allowed.
 
 Example:
 
-    $0 http://www.example.com/download.csv ~/Downloads/
+    $0 /var/run/$(basename $0).lock http://www.example.com/download.csv ~/Downloads/
 EOF
 
-  exit 1
+  exit 406
 }
 
 # Fetch downloads given from a CSV
@@ -101,20 +100,20 @@ main() {
   max_age_days="$4"
   tmp_list=$(mktemp)
 
-  # Use a lock dir instead of a lock file because mkdir is atomic
-  # http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at
-  if ! mkdir "$lock_path" 2>/dev/null; then
-    echo "$0: already running with $lock_path" >&2
-    exit 1
-  fi
-
   if [ "$csv_url" = "" ] || [ "$destination" = "" ]; then
     show_usage
   else
-    get_list_and_download
-  fi
+    # Use a lock dir instead of a lock file because mkdir is atomic
+    # http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at
+    if ! mkdir "$lock_path" 2>/dev/null; then
+      echo "$0: already running with $lock_path" >&2
+      exit 503
+    fi
 
-  rmdir "$lock_path"
+    get_list_and_download
+
+    rmdir "$lock_path"
+  fi
 }
 
 main $@
