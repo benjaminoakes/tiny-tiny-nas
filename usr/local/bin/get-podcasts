@@ -1,7 +1,23 @@
 #!/bin/sh
 set -o errexit
 
-source "/var/mnt/etc/get-podcasts.env"
+show_usage() {
+  cat <<EOF
+Usage: $0 csv_url destination [max_age_days]
+
+Download files specified in a remote CSV file to the given destination.
+Existing files are skipped.
+
+The CSV has the format filename,url.  Very little parsing is done; only simple
+comma separated values are allowed.
+
+Example:
+
+    $0 http://www.example.com/download.csv ~/Downloads/
+EOF
+
+  exit 1
+}
 
 # Fetch downloads given from a CSV
 #
@@ -29,16 +45,33 @@ download_listed() {
   done
 }
 
-# There's a bug with `wget -q`, so we download to a file instead.
-tmp_list="$PODCAST_TMP_DIR/rss.csv"
-mkdir -p "$PODCAST_TMP_DIR"
-wget -O "$tmp_list" "$PODCAST_CSV_URL"
+get_list_and_download() {
+  # There's a bug with `wget -q`, so we download to a file instead.
+  wget -O "$tmp_list" "$csv_url"
 
-mkdir -p "$PODCAST_DESTINATION"
-# Get rid of the old ones
-find "$PODCAST_DESTINATION" -type f -mtime +$PODCAST_MAX_AGE_DAYS -exec rm -rfv {} \;
-cd "$PODCAST_DESTINATION"
-# Download the new ones
-download_listed < "$tmp_list"
+  mkdir -p "$destination"
 
-rm -f "$tmp_list"
+  if [ "$max_age_days" != "" ]; then
+    find "$destination" -type f -mtime +$max_age_days -exec rm -rfv {} \;
+  fi
+
+  cd "$destination"
+  download_listed < "$tmp_list"
+
+  rm -f "$tmp_list"
+}
+
+main() {
+  csv_url="$1"
+  destination="$2"
+  max_age_days="$3"
+  tmp_list=$(mktemp)
+
+  if [ "$csv_url" = "" ] || [ "$destination" = "" ]; then
+    show_usage
+  else
+    get_list_and_download
+  fi
+}
+
+main $@
