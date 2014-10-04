@@ -89,8 +89,6 @@ get_list_and_download() {
 
   cd "$destination"
   download_listed < "$tmp_list"
-
-  rm -f "$tmp_list"
 }
 
 main() {
@@ -112,6 +110,7 @@ main() {
 
     get_list_and_download
 
+    rm -f "$tmp_list"
     rmdir "$lock_path"
   fi
 }
