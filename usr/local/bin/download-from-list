@@ -35,12 +35,12 @@ download_listed() {
       if [ -f "$clean_name" ]; then
         echo "File exists, skipping $clean_name"
       else
-        wget "$url" -O "$clean_name"
+        wget "$url" -O "$clean_name.download"
+        mv -v "$clean_name.download" "$clean_name"
         # Force updated mtime
         touch "$clean_name"
 
         # Automatically compute checksums
-        # Also a good way to know when your download finished!
         md5sum "$clean_name" >> MD5SUMS
         sha1sum "$clean_name" >> SHA1SUMS
       fi
