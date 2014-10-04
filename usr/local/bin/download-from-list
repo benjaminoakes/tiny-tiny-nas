@@ -73,6 +73,7 @@ unzip_if_zipfile() {
 
   # If the extension is .zip
   if [ "$(basename "$path" .zip)" != "$(basename "$path")" ]; then
+    # FIXME: if used in conjunction with max_age_days, unzipped files may be deleted automatically.
     unzip -d "$(basename "$path" .zip)" "$path"
   fi
 }
