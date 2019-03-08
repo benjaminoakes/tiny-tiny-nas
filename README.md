@@ -3,6 +3,8 @@ tiny-tiny-nas
 
 Sideloaded NAS features for MIPS-based embedded Linux (tested with Actiontec C1000A router).
 
+**Update (March 2019):** A firmware update makes `sh` now require a login with an unknown password.  I'm archiving this repository as a result, but the content will remain here for historical purposes.
+
 This project started because I found out my Actiontec C1000A router had an unused, "unsupported" USB3 port.  Turns out it's running Linux, grants root access, and can mount attached USB storage just fine -- if coaxed.
 
 It's a really tiny box!  It's an embedded system without a ton of resources to spare, but it takes almost no power, would be left running all day anyway, and can do some useful tasks.
@@ -48,6 +50,9 @@ Installation steps:
   * Find the admin password for your router
   * `telnet 192.168.0.1` using username `admin` and your password
   * You'll be at a `>` prompt.  Type `sh` then enter.
+  
+**Update (March 2019):** A firmware update makes `sh` now require a login with an unknown password.  I'm archiving this repository as a result, but the content will remain here for historical purposes.
+  
   * You'll be at a `#` prompt.  Now it's time to mount your USB disk, do some first time setup, and start the services:
 
 First time setup:
